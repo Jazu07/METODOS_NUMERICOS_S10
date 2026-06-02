@@ -1,0 +1,37 @@
+import numpy as np
+from scipy.interpolate import CubicSpline
+
+# 1. Datos
+V = np.array([1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4])
+P = np.array([300.2, 242.1, 201.5, 169.8, 151, 134.3, 120.8, 107.9, 99.1, 93.4, 86.2, 79.5, 75.1])
+h = 0.25
+
+# 2. Fórmulas de Newton-CoteS
+# Trapecio
+I_trap = (h/2) * (P[0] + 2*sum(P[1:-1]) + P[-1])
+
+# Simpson 1/3 
+I_s13 = (h/3) * (P[0] + 4*sum(P[1:-1:2]) + 2*sum(P[2:-2:2]) + P[-1])
+
+# Simpson 3/8 
+sum_mult3 = sum(P[3:-1:3])
+I_s38 = (3*h/8) * (P[0] + 3*(sum(P[1:-1]) - sum_mult3) + 2*sum_mult3 + P[-1])
+
+# 3. Cuadratura de Gauss-Legendre (m=3) con Spline
+cs = CubicSpline(V, P)
+t = np.array([-np.sqrt(0.6), 0, np.sqrt(0.6)]) 
+w = np.array([5/9, 8/9, 5/9])                
+V_t = 1.5 * t + 2.5  
+I_gauss = 1.5 * sum(w * cs(V_t))
+
+# 4. Cálculo de Errores y Tabla
+I_ref = cs.integrate(1, 4)
+err = lambda I: abs(I - I_ref) / I_ref * 100
+
+print(f"{'MÉTODO':<18} | {'VALOR APROX':<14} | {'ERROR %'}")
+print("-" * 47)
+resultados = [("Trapecio", I_trap), ("Simpson 1/3", I_s13), 
+              ("Simpson 3/8", I_s38), ("Gauss-Legendre", I_gauss)]
+
+for nombre, I in resultados:
+    print(f"{nombre:<18} | {I:<14.4f} | {err(I):.4f}")
