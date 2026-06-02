@@ -1,0 +1,11 @@
+1. El impacto del ruido (Trapecio vs. Simpson)
+
+Regla del Trapecio (Estable): Al conectar los puntos con líneas rectas, los pequeños errores (picos de ruido hacia arriba y hacia abajo) tienden a compensarse. Es un método rígido y muy robusto frente a datos imperfectos.
+
+Reglas de Simpson (Vulnerables): Al conectar los puntos con polinomios (curvas), fuerzan a la gráfica a pasar exactamente por cada medición ruidosa. Esto genera "sobreajuste" (oscilaciones artificiales que no existen en la realidad), arruinando la integral.
+
+2. Gauss-Legendre y la Interpolación (Splines)
+
+La Ventaja: Hace matemáticamente posible aplicar el método. Gauss requiere evaluar la presión en puntos decimales exactos que el sensor no midió; el Spline crea un puente continuo para calcular esos puntos faltantes.
+
+La Desventaja (Menor precisión real): Gauss-Legendre es un integrador perfecto, pero es "ciego". Como el Spline copia y hereda las vibraciones del ruido original, Gauss termina calculando de forma absolutamente perfecta el área de una curva que está equivocada.
